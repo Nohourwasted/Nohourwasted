@@ -17,6 +17,7 @@
             --purple: #8b5cf6;
             --green: #22c55e;
             --red: #ef4444;
+            --card-radius: 1rem;
         }
         [data-theme="light"] {
             --bg: #f1f5f9;
@@ -30,9 +31,10 @@
             font-family: system-ui, -apple-system, sans-serif;
             background: var(--bg);
             color: var(--text);
-            padding: 1rem;
+            padding: 0.5rem 1rem 6rem 1rem;
             min-height: 100vh;
             transition: background 0.3s, color 0.3s;
+            padding-bottom: 80px;
         }
         .app { max-width: 860px; margin: 0 auto; }
         header {
@@ -40,56 +42,85 @@
             flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            padding: 0.5rem 0 1.2rem;
+            padding: 0.5rem 0 1rem;
             border-bottom: 1px solid var(--border);
-            margin-bottom: 1.2rem;
-            gap: 0.5rem;
+            margin-bottom: 1rem;
+            gap: 0.3rem;
         }
-        h1 { font-size: 1.5rem; background: linear-gradient(135deg,var(--gold),var(--red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .header-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-        .header-actions button, .theme-toggle {
+        h1 { font-size: 1.3rem; background: linear-gradient(135deg,var(--gold),var(--red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header-actions { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+        .header-actions button {
             background: var(--surface);
             border: 1px solid var(--border);
             color: var(--text-muted);
-            padding: 0.25rem 0.7rem;
+            padding: 0.2rem 0.6rem;
             border-radius: 0.5rem;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             cursor: pointer;
-            transition: 0.2s;
         }
-        .header-actions button:hover, .theme-toggle:hover { background: var(--border); color: var(--text); }
-        .date-badge { background: var(--surface); padding: 0.2rem 0.8rem; border-radius: 999px; font-size: 0.75rem; border: 1px solid var(--border); }
-
-        /* Cards */
+        .header-actions button:hover { background: var(--border); color: var(--text); }
+        .date-badge { background: var(--surface); padding: 0.15rem 0.7rem; border-radius: 999px; font-size: 0.7rem; border: 1px solid var(--border); }
+        .tabs {
+            display: flex;
+            gap: 0.3rem;
+            margin-bottom: 1.2rem;
+            background: var(--surface);
+            padding: 0.3rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 0.5rem 0.3rem;
+            border: none;
+            border-radius: 0.7rem;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+        }
+        .tab-btn.active {
+            background: var(--gold);
+            color: #0b1120;
+        }
+        .tab-btn:hover:not(.active) { background: var(--border); color: var(--text); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
         .card {
             background: var(--surface);
-            border-radius: 1rem;
-            padding: 1.2rem;
-            margin-bottom: 1.2rem;
+            border-radius: var(--card-radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
             border-left: 4px solid var(--gold);
             transition: background 0.3s;
         }
-        .card h2 { font-size: 0.95rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
-        .card textarea, .card input[type="text"] {
+        .card h2 { font-size: 0.9rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .card textarea, .card input[type="text"], .card input[type="number"] {
             width: 100%;
             background: var(--bg);
             color: var(--text);
             border: 1px solid var(--border);
             border-radius: 0.5rem;
-            padding: 0.5rem 0.7rem;
-            font-size: 0.9rem;
+            padding: 0.4rem 0.6rem;
+            font-size: 0.85rem;
             font-family: inherit;
         }
         .card textarea:focus, .card input:focus { outline: none; border-color: var(--gold); }
-        .card textarea { min-height: 60px; resize: vertical; }
-
+        .card textarea { min-height: 50px; resize: vertical; }
         .btn {
-            padding: 0.35rem 1rem;
+            padding: 0.3rem 0.9rem;
             border: none;
             border-radius: 0.5rem;
             font-weight: 600;
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             transition: 0.2s;
         }
         .btn-primary { background: var(--blue); color: white; }
@@ -98,133 +129,70 @@
         .btn-gold:hover { filter: brightness(0.85); }
         .btn-green { background: var(--green); color: #0b1120; }
         .btn-green:hover { filter: brightness(0.85); }
-        .btn-purple { background: var(--purple); color: white; }
-        .btn-purple:hover { filter: brightness(0.85); }
         .btn-red { background: var(--red); color: white; }
         .btn-red:hover { filter: brightness(0.85); }
-        .btn-sm { padding: 0.15rem 0.6rem; font-size: 0.7rem; }
-
-        .flex-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-        .flex-row input { flex: 1; min-width: 100px; }
-
-        /* Mission & Habit items */
-        .mission-item, .habit-item {
+        .btn-sm { padding: 0.15rem 0.5rem; font-size: 0.65rem; }
+        .flex-row { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+        .flex-row input { flex: 1; min-width: 80px; }
+        .item-list { list-style: none; }
+        .item-list li {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 0.4rem 0.6rem;
+            padding: 0.3rem 0.5rem;
             background: var(--bg);
             border-radius: 0.5rem;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.2rem;
         }
-        .mission-item.done { border-left: 3px solid var(--green); opacity: 0.7; }
-        .mission-item .text { flex: 1; word-break: break-word; }
-        .mission-item .text.done { text-decoration: line-through; color: var(--text-muted); }
-        .status-btn {
+        .item-list li .text { flex: 1; font-size: 0.85rem; }
+        .item-list li .text.done { text-decoration: line-through; color: var(--text-muted); }
+        .item-list li .badge {
+            font-size: 0.6rem;
+            padding: 0.05rem 0.4rem;
+            border-radius: 999px;
+            background: var(--gold);
+            color: #0b1120;
+        }
+        .item-list li .amount { font-weight: 600; color: var(--gold); font-size: 0.85rem; }
+        .delete-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.8rem; }
+        .delete-btn:hover { color: var(--red); }
+        .check-btn {
             background: none;
             border: 1px solid var(--border);
             color: var(--text-muted);
-            width: 26px;
-            height: 26px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
         }
-        .status-btn:hover { border-color: var(--green); }
-        .status-btn.done { background: var(--green); border-color: var(--green); color: white; }
-        .delete-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; }
-        .delete-btn:hover { color: var(--red); }
-        .habit-check { width: 18px; height: 18px; accent-color: var(--purple); cursor: pointer; }
-        .habit-streak { font-size: 0.65rem; color: var(--gold); background: var(--surface); padding: 0.05rem 0.5rem; border-radius: 999px; border: 1px solid var(--border); }
-        .empty-msg { color: var(--text-muted); text-align: center; padding: 0.5rem 0; font-size: 0.85rem; }
-
-        /* Stats */
+        .check-btn.done { background: var(--green); border-color: var(--green); color: white; }
+        .empty-msg { color: var(--text-muted); text-align: center; padding: 0.5rem 0; font-size: 0.8rem; }
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-            gap: 0.4rem;
+            grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+            gap: 0.3rem;
             margin-top: 0.3rem;
         }
         .stat-card {
             background: var(--bg);
-            padding: 0.5rem;
+            padding: 0.4rem;
             border-radius: 0.5rem;
             text-align: center;
             border: 1px solid var(--border);
         }
-        .stat-card .num { font-size: 1.3rem; font-weight: 700; color: var(--gold); }
-        .stat-card .lbl { font-size: 0.55rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.3px; }
-
-        /* Reminder */
-        .reminder-banner {
-            background: var(--red);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-            display: none;
-            font-weight: 600;
-            text-align: center;
-            font-size: 0.85rem;
-        }
-        .reminder-banner.show { display: block; }
-
-        /* Weekly Review */
-        .weekly-review {
-            background: var(--bg);
-            border-radius: 0.5rem;
-            padding: 0.7rem;
-            margin-top: 0.4rem;
-            max-height: 280px;
-            overflow-y: auto;
-        }
-        .weekly-review table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
-        .weekly-review th { text-align: left; color: var(--text-muted); font-weight: 400; padding: 0.15rem 0.3rem; border-bottom: 1px solid var(--border); }
-        .weekly-review td { padding: 0.15rem 0.3rem; border-bottom: 1px solid var(--border); }
-
-        /* Heatmap */
-        .heatmap { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin-top: 0.5rem; }
-        .heatmap .day {
-            aspect-ratio: 1;
-            border-radius: 4px;
-            background: var(--border);
-            font-size: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-        }
-        .heatmap .day.complete { background: var(--green); color: white; }
-        .heatmap .day.partial { background: var(--gold); color: #0b1120; }
-        .heatmap .day.empty { background: var(--border); opacity: 0.3; }
-
-        /* AI Coach */
-        .coach-msg {
-            background: var(--bg);
-            padding: 0.6rem 0.8rem;
-            border-radius: 0.5rem;
-            margin-top: 0.4rem;
-            border-left: 3px solid var(--purple);
-            font-size: 0.85rem;
-            color: var(--text);
-        }
-        .coach-msg .label { color: var(--purple); font-weight: 600; font-size: 0.7rem; text-transform: uppercase; }
-
-        /* Sync status */
-        .sync-status { font-size: 0.65rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.3rem; }
-        .sync-status.synced { color: var(--green); }
-
-        /* Toast */
+        .stat-card .num { font-size: 1.1rem; font-weight: 700; color: var(--gold); }
+        .stat-card .lbl { font-size: 0.5rem; color: var(--text-muted); text-transform: uppercase; }
         .toast {
             position: fixed;
-            bottom: 20px;
+            bottom: 80px;
             left: 50%;
             transform: translateX(-50%);
             background: var(--surface);
             color: var(--text);
-            padding: 0.5rem 1.2rem;
+            padding: 0.4rem 1rem;
             border-radius: 0.5rem;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
             opacity: 0;
             transition: opacity 0.3s;
@@ -233,117 +201,183 @@
             border: 1px solid var(--border);
         }
         .toast.show { opacity: 1; }
-
-        /* Voice button */
-        .voice-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.2rem; padding: 0 0.3rem; }
-        .voice-btn:hover { color: var(--gold); }
-        .voice-btn.listening { color: var(--red); animation: pulse 0.8s infinite; }
-        @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
-
-        /* Responsive */
+        .sync-status { font-size: 0.6rem; color: var(--text-muted); }
+        .sync-status.synced { color: var(--green); }
+        .reminder-banner {
+            background: var(--red);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: none;
+            font-weight: 600;
+            text-align: center;
+            font-size: 0.8rem;
+        }
+        .reminder-banner.show { display: block; }
         @media (max-width: 480px) {
-            .card { padding: 0.9rem; }
-            h1 { font-size: 1.2rem; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .card { padding: 0.8rem; }
+            h1 { font-size: 1.1rem; }
+            .tab-btn { font-size: 0.6rem; padding: 0.4rem 0.2rem; }
         }
     </style>
 </head>
 <body>
+
 <div class="app">
     <header>
         <h1>⏳ No Hour Wasted</h1>
         <div class="header-actions">
-            <button class="theme-toggle" id="themeToggle">🌓</button>
+            <button id="themeToggle">🌓</button>
             <button id="notifyBtn">🔔</button>
-            <button id="exportBtn">📤</button>
-            <button id="weeklyBtn">📊</button>
             <button id="syncBtn">☁️</button>
             <span class="date-badge" id="dateBadge"></span>
         </div>
     </header>
-
     <div class="sync-status" id="syncStatus">☁️ Offline</div>
-    <div class="reminder-banner" id="reminderBanner">⚠️ Incomplete tasks from yesterday!</div>
 
-    <!-- AI Coach -->
-    <div class="card" style="border-color:var(--purple);">
-        <h2>🧠 AI Coach</h2>
-        <div class="coach-msg" id="coachMsg"><span class="label">💡 Insight:</span> Complete today's 3 missions to build your streak!</div>
-        <button class="btn btn-sm btn-purple" id="refreshCoach">Refresh Advice</button>
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="home">🏠 Home</button>
+        <button class="tab-btn" data-tab="grocery">🛒 Grocery</button>
+        <button class="tab-btn" data-tab="spending">💰 Spending</button>
+        <button class="tab-btn" data-tab="settings">⚙️ Settings</button>
     </div>
 
-    <!-- Daily Prepare -->
-    <div class="card" style="border-color:var(--gold);">
-        <h2>🧘 Daily Prepare</h2>
-        <textarea id="prepareInput" placeholder="What's your focus today?"></textarea>
-        <div class="flex-row" style="margin-top:0.3rem;">
-            <button class="btn btn-gold" id="savePrepare">Save Intent</button>
-            <span style="font-size:0.75rem;color:var(--text-muted);align-self:center;" id="prepareStatus"></span>
+    <!-- HOME TAB -->
+    <div class="tab-content active" id="tab-home">
+        <div class="reminder-banner" id="reminderBanner">⚠️ Incomplete tasks from yesterday!</div>
+        <div class="card" style="border-color:var(--purple);">
+            <h2>🧠 AI Coach</h2>
+            <div id="coachMsg" style="background:var(--bg); padding:0.5rem 0.7rem; border-radius:0.5rem; border-left:3px solid var(--purple); font-size:0.8rem;">💡 Start by adding your top 3 priorities for today.</div>
+            <button class="btn btn-sm btn-purple" id="refreshCoach" style="margin-top:0.3rem;">Refresh Advice</button>
+        </div>
+        <div class="card" style="border-color:var(--gold);">
+            <h2>🧘 Daily Prepare</h2>
+            <textarea id="prepareInput" placeholder="What's your focus today?"></textarea>
+            <div class="flex-row" style="margin-top:0.3rem;">
+                <button class="btn btn-gold" id="savePrepare">Save Intent</button>
+                <span style="font-size:0.7rem;color:var(--text-muted);align-self:center;" id="prepareStatus"></span>
+            </div>
+        </div>
+        <div class="card" style="border-color:var(--blue);">
+            <h2>🎯 Daily Mission – Max 3</h2>
+            <div class="flex-row">
+                <input type="text" id="missionInput" placeholder="What must get done?" />
+                <button class="btn btn-primary" id="addMission">Add</button>
+            </div>
+            <ul class="item-list" id="missionList"><li class="empty-msg">No missions today.</li></ul>
+        </div>
+        <div class="card" style="border-color:var(--purple);">
+            <h2>🔥 Habits</h2>
+            <div class="flex-row">
+                <input type="text" id="habitInput" placeholder="e.g. Meditate" />
+                <button class="btn btn-purple" id="addHabit">Add</button>
+            </div>
+            <div id="habitList"><div class="empty-msg">No habits yet.</div></div>
+        </div>
+        <div class="card" style="border-color:var(--green);">
+            <h2>📝 Notes & Updates</h2>
+            <textarea id="notesInput" placeholder="Reflections, blockers, wins..."></textarea>
+            <div class="flex-row" style="margin-top:0.3rem;">
+                <button class="btn btn-green" id="saveNotes">Save Notes</button>
+                <span style="font-size:0.7rem;color:var(--text-muted);align-self:center;" id="notesStatus"></span>
+            </div>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card"><div class="num" id="statMissions">0</div><div class="lbl">Today</div></div>
+            <div class="stat-card"><div class="num" id="statDone">0</div><div class="lbl">Done</div></div>
+            <div class="stat-card"><div class="num" id="statHabits">0</div><div class="lbl">Habits</div></div>
+            <div class="stat-card"><div class="num" id="statStreak">0</div><div class="lbl">Streak</div></div>
         </div>
     </div>
 
-    <!-- Daily Mission -->
-    <div class="card" style="border-color:var(--blue);">
-        <h2>🎯 Daily Mission – Max 3</h2>
-        <div class="flex-row">
-            <input type="text" id="missionInput" placeholder="What must get done?" />
-            <button class="voice-btn" id="voiceMission" title="Voice input">🎤</button>
-            <button class="btn btn-primary" id="addMission">Add</button>
-        </div>
-        <ul id="missionList" style="list-style:none;margin-top:0.4rem;">
-            <li class="empty-msg">No missions yet.</li>
-        </ul>
-    </div>
-
-    <!-- Habits -->
-    <div class="card" style="border-color:var(--purple);">
-        <h2>🔥 Habits</h2>
-        <div class="flex-row">
-            <input type="text" id="habitInput" placeholder="e.g. Meditate" />
-            <button class="voice-btn" id="voiceHabit" title="Voice input">🎤</button>
-            <button class="btn btn-purple" id="addHabit">Add</button>
-        </div>
-        <div id="habitList" style="margin-top:0.4rem;"></div>
-    </div>
-
-    <!-- Notes -->
-    <div class="card" style="border-color:var(--green);">
-        <h2>📝 Notes & Updates</h2>
-        <textarea id="notesInput" placeholder="Reflections, blockers, wins..."></textarea>
-        <div class="flex-row" style="margin-top:0.3rem;">
-            <button class="btn btn-green" id="saveNotes">Save Notes</button>
-            <span style="font-size:0.75rem;color:var(--text-muted);align-self:center;" id="notesStatus"></span>
+    <!-- GROCERY TAB -->
+    <div class="tab-content" id="tab-grocery">
+        <div class="card" style="border-color:var(--green);">
+            <h2>🛒 Grocery List</h2>
+            <div class="flex-row">
+                <input type="text" id="groceryInput" placeholder="Item name..." />
+                <select id="groceryCategory" style="background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:0.5rem; padding:0.4rem;">
+                    <option value="Produce">🥬 Produce</option>
+                    <option value="Dairy">🧀 Dairy</option>
+                    <option value="Meat">🥩 Meat</option>
+                    <option value="Pantry">🥫 Pantry</option>
+                    <option value="Other">📦 Other</option>
+                </select>
+                <button class="btn btn-green" id="addGrocery">Add</button>
+            </div>
+            <ul class="item-list" id="groceryList"><li class="empty-msg">No grocery items yet.</li></ul>
+            <button class="btn btn-sm btn-red" id="clearGrocery" style="margin-top:0.5rem;">Clear Purchased</button>
         </div>
     </div>
 
-    <!-- Weekly Review (hidden) -->
-    <div class="card" style="border-color:var(--gold);display:none;" id="weeklyCard">
-        <h2>📊 Weekly Review</h2>
-        <div class="weekly-review" id="weeklyContent"></div>
-        <button class="btn btn-sm btn-primary" id="closeWeekly" style="margin-top:0.4rem;">Close</button>
+    <!-- SPENDING TAB -->
+    <div class="tab-content" id="tab-spending">
+        <div class="card" style="border-color:var(--gold);">
+            <h2>💰 Spending Tracker</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.3rem; margin-bottom:0.5rem;">
+                <input type="text" id="spendingDesc" placeholder="Description..." style="grid-column:1/3; background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:0.5rem; padding:0.4rem; font-size:0.85rem;" />
+                <input type="number" id="spendingAmount" placeholder="Amount" style="background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:0.5rem; padding:0.4rem; font-size:0.85rem;" />
+                <select id="spendingCategory" style="background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:0.5rem; padding:0.4rem;">
+                    <option value="Food">🍔 Food</option>
+                    <option value="Transport">🚗 Transport</option>
+                    <option value="Shopping">🛍️ Shopping</option>
+                    <option value="Bills">📄 Bills</option>
+                    <option value="Other">📦 Other</option>
+                </select>
+                <button class="btn btn-gold" id="addSpending" style="grid-column:1/3;">Add Expense</button>
+            </div>
+            <div class="stats-grid" style="margin-bottom:0.5rem;">
+                <div class="stat-card"><div class="num" id="totalSpending">0</div><div class="lbl">This Month</div></div>
+            </div>
+            <ul class="item-list" id="spendingList"><li class="empty-msg">No expenses recorded.</li></ul>
+            <button class="btn btn-sm btn-red" id="clearSpending">Clear All</button>
+        </div>
     </div>
 
-    <!-- Calendar Heatmap -->
-    <div class="card" style="border-color:var(--blue);">
-        <h2>📅 Monthly Heatmap</h2>
-        <div class="heatmap" id="heatmap"></div>
+    <!-- SETTINGS TAB -->
+    <div class="tab-content" id="tab-settings">
+        <div class="card" style="border-color:var(--purple);">
+            <h2>⚙️ Settings</h2>
+            <div style="margin-bottom:1rem;">
+                <h3 style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.3rem;">🎨 Theme Colors</h3>
+                <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">
+                    <button class="color-opt" data-color="#f59e0b" style="background:#f59e0b; width:28px; height:28px; border-radius:50%; border:2px solid var(--border); cursor:pointer;"></button>
+                    <button class="color-opt" data-color="#3b82f6" style="background:#3b82f6; width:28px; height:28px; border-radius:50%; border:2px solid var(--border); cursor:pointer;"></button>
+                    <button class="color-opt" data-color="#8b5cf6" style="background:#8b5cf6; width:28px; height:28px; border-radius:50%; border:2px solid var(--border); cursor:pointer;"></button>
+                    <button class="color-opt" data-color="#22c55e" style="background:#22c55e; width:28px; height:28px; border-radius:50%; border:2px solid var(--border); cursor:pointer;"></button>
+                    <button class="color-opt" data-color="#ef4444" style="background:#ef4444; width:28px; height:28px; border-radius:50%; border:2px solid var(--border); cursor:pointer;"></button>
+                    <button class="color-opt" data-color="#ec4899" style="background:#ec4899; width:28px; height:28px; border-radius:50%; border:2px solid var(--border); cursor:pointer;"></button>
+                </div>
+                <div style="display:flex; gap:0.4rem; flex-wrap:wrap; margin-top:0.3rem;">
+                    <button class="bg-opt" data-bg="#0b1120" style="background:#0b1120; width:28px; height:28px; border-radius:50%; border:2px solid var(--border); cursor:pointer;"></button>
+                    <button class="bg-opt" data-bg="#1a1a2e" style="background:#1a1a2e; width:28px; height:28px; border-radius:50%; border:2px solid var(--border); cursor:pointer;"></button>
+                    <button class="bg-opt" data-bg="#2d1b69" style="background:#2d1b69; width:28px; height:28px; border-radius:50%; border:2px solid var(--border); cursor:pointer;"></button>
+                    <button class="bg-opt" data-bg="#1b2a4a" style="background:#1b2a4a; width:28px; height:28px; border-radius:50%; border:2px solid var(--border); cursor:pointer;"></button>
+                </div>
+                <button class="btn btn-sm btn-red" id="resetThemeBtn" style="margin-top:0.3rem;">Reset Default</button>
+            </div>
+            <div style="border-top:1px solid var(--border); padding-top:0.8rem;">
+                <h3 style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.3rem;">📤 Data</h3>
+                <button class="btn btn-sm btn-primary" id="exportBtn">Export JSON</button>
+                <button class="btn btn-sm btn-primary" id="exportCSVBtn">Export CSV</button>
+                <button class="btn btn-sm btn-red" id="clearAllDataBtn" style="margin-left:0.3rem;">Clear All Data</button>
+            </div>
+            <div style="border-top:1px solid var(--border); padding-top:0.8rem; margin-top:0.8rem;">
+                <h3 style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.3rem;">📊 Weekly Review</h3>
+                <button class="btn btn-sm btn-purple" id="weeklyBtn">Show Weekly Review</button>
+                <div id="weeklyContent" style="margin-top:0.5rem;"></div>
+            </div>
+            <div style="border-top:1px solid var(--border); padding-top:0.8rem; margin-top:0.8rem;">
+                <h3 style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.3rem;">☁️ Cloud Sync</h3>
+                <button class="btn btn-sm btn-gold" id="syncBtnSettings">Sync to Cloud</button>
+                <span style="font-size:0.7rem;color:var(--text-muted);margin-left:0.5rem;" id="syncStatusSettings"></span>
+            </div>
+        </div>
     </div>
 
-    <!-- Stats -->
-    <div class="stats-grid">
-        <div class="stat-card"><div class="num" id="statMissions">0</div><div class="lbl">Today's Tasks</div></div>
-        <div class="stat-card"><div class="num" id="statDone">0</div><div class="lbl">Completed</div></div>
-        <div class="stat-card"><div class="num" id="statHabits">0</div><div class="lbl">Habits</div></div>
-        <div class="stat-card"><div class="num" id="statStreak">0</div><div class="lbl">Day Streak</div></div>
-    </div>
-
-    <!-- Share -->
-    <div style="margin-top:1rem;text-align:center;">
-        <button class="btn btn-sm btn-primary" id="shareBtn">📤 Share Progress</button>
-    </div>
+    <div class="toast" id="toast"></div>
 </div>
-
-<div class="toast" id="toast"></div>
 
 <script>
 // ================================================================
@@ -359,46 +393,32 @@ const FIREBASE_CONFIG = {
 };
 // ================================================================
 
-// ----- STATE -----
-let state = { prepare: '', missions: [], habits: [], notes: '', lastDate: '' };
+// ===== STATE =====
+let state = {
+    prepare: '',
+    missions: [],
+    habits: [],
+    notes: '',
+    lastDate: '',
+    groceries: [],
+    spending: []
+};
 const TODAY = new Date().toISOString().split('T')[0];
+const CURRENT_MONTH = TODAY.substring(0, 7);
 
-// ----- DOM REFS -----
+// ===== DOM REFS =====
 const $ = id => document.getElementById(id);
-const prepareInput = $('prepareInput'), savePrepare = $('savePrepare'), prepareStatus = $('prepareStatus');
-const missionInput = $('missionInput'), addMission = $('addMission'), missionList = $('missionList'), voiceMission = $('voiceMission');
-const habitInput = $('habitInput'), addHabit = $('addHabit'), habitList = $('habitList'), voiceHabit = $('voiceHabit');
-const notesInput = $('notesInput'), saveNotes = $('saveNotes'), notesStatus = $('notesStatus');
-const statMissions = $('statMissions'), statDone = $('statDone'), statHabits = $('statHabits'), statStreak = $('statStreak');
-const reminderBanner = $('reminderBanner'), dateBadge = $('dateBadge'), syncStatus = $('syncStatus');
-const toast = $('toast'), weeklyCard = $('weeklyCard'), weeklyContent = $('weeklyContent'), heatmap = $('heatmap');
-const notifyBtn = $('notifyBtn'), exportBtn = $('exportBtn'), weeklyBtn = $('weeklyBtn'), syncBtn = $('syncBtn');
-const closeWeekly = $('closeWeekly'), themeToggle = $('themeToggle'), coachMsg = $('coachMsg'), refreshCoach = $('refreshCoach');
-const shareBtn = $('shareBtn');
-
-// ----- TOAST -----
+const toast = $('toast');
 let toastTimer;
+
 function showToast(msg) {
     toast.textContent = msg;
     toast.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2000);
 }
 
-// ----- THEME -----
-function toggleTheme() {
-    const current = document.documentElement.getAttribute('data-theme');
-    const next = current === 'light' ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
-}
-function loadTheme() {
-    const saved = localStorage.getItem('theme');
-    if (saved) document.documentElement.setAttribute('data-theme', saved);
-}
-themeToggle.addEventListener('click', toggleTheme);
-
-// ----- LOCAL STORAGE -----
+// ===== LOCAL STORAGE =====
 function loadState() {
     try {
         const raw = localStorage.getItem('noHourWasted');
@@ -407,19 +427,384 @@ function loadState() {
             state = { ...state, ...parsed };
         }
     } catch (e) {}
-    state.habits = state.habits.map(h => ({ ...h, history: h.history || {} }));
+    state.habits = (state.habits || []).map(h => ({ ...h, history: h.history || {} }));
+    state.groceries = state.groceries || [];
+    state.spending = state.spending || [];
 }
 function saveStateLocal() {
     localStorage.setItem('noHourWasted', JSON.stringify(state));
 }
 
-// ----- FIREBASE (CDN) -----
+// ===== TAB SWITCHING =====
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        const tabId = 'tab-' + this.dataset.tab;
+        document.getElementById(tabId).classList.add('active');
+    });
+});
+
+// ================================================================
+//  HOME TAB FUNCTIONS
+// ================================================================
+function renderPrepare() {
+    $('prepareInput').value = state.prepare || '';
+    $('prepareStatus').textContent = state.prepare ? '✅ Set' : '';
+}
+$('savePrepare').addEventListener('click', () => {
+    state.prepare = $('prepareInput').value.trim();
+    saveStateLocal();
+    renderAll();
+    showToast('✅ Intent saved');
+});
+
+function renderMissions() {
+    const todayMissions = (state.missions || []).filter(m => m.date === TODAY);
+    const list = $('missionList');
+    if (todayMissions.length === 0) {
+        list.innerHTML = '<li class="empty-msg">No missions today.</li>';
+        $('statMissions').textContent = '0';
+        $('statDone').textContent = '0';
+        return;
+    }
+    const done = todayMissions.filter(m => m.done).length;
+    $('statMissions').textContent = todayMissions.length;
+    $('statDone').textContent = done;
+    list.innerHTML = todayMissions.map(m => `
+        <li>
+            <button class="check-btn ${m.done ? 'done' : ''}" data-id="${m.id}">${m.done ? '✓' : '○'}</button>
+            <span class="text ${m.done ? 'done' : ''}">${escapeHtml(m.text)}</span>
+            <button class="delete-btn" data-id="${m.id}">✕</button>
+        </li>
+    `).join('');
+    list.querySelectorAll('.check-btn').forEach(b => b.addEventListener('click', function() {
+        const id = parseInt(this.dataset.id);
+        const task = state.missions.find(m => m.id === id);
+        if (task) { task.done = !task.done; saveStateLocal(); renderAll(); }
+    }));
+    list.querySelectorAll('.delete-btn').forEach(b => b.addEventListener('click', function() {
+        const id = parseInt(this.dataset.id);
+        state.missions = state.missions.filter(m => m.id !== id);
+        saveStateLocal(); renderAll();
+    }));
+}
+$('addMission').addEventListener('click', () => {
+    const text = $('missionInput').value.trim();
+    if (!text) return;
+    const todayMissions = (state.missions || []).filter(m => m.date === TODAY);
+    if (todayMissions.length >= 3) { showToast('⚠️ Max 3 missions!'); return; }
+    state.missions.push({ id: Date.now() + Math.random() * 1000, text, done: false, date: TODAY });
+    saveStateLocal();
+    renderAll();
+    $('missionInput').value = '';
+});
+$('missionInput').addEventListener('keydown', e => { if (e.key === 'Enter') $('addMission').click(); });
+
+function renderHabits() {
+    const habits = state.habits || [];
+    const list = $('habitList');
+    if (habits.length === 0) {
+        list.innerHTML = '<div class="empty-msg">No habits yet.</div>';
+        $('statHabits').textContent = '0';
+        return;
+    }
+    $('statHabits').textContent = habits.length;
+    list.innerHTML = habits.map(h => {
+        let streak = 0; let d = new Date();
+        while (true) {
+            const key = d.toISOString().split('T')[0];
+            if (h.history && h.history[key]) { streak++; d.setDate(d.getDate() - 1); }
+            else break;
+        }
+        const doneToday = h.history && h.history[TODAY] === true;
+        return `
+            <div style="display:flex; align-items:center; gap:0.5rem; padding:0.3rem 0.5rem; background:var(--bg); border-radius:0.5rem; margin-bottom:0.2rem;">
+                <input type="checkbox" class="habit-check" data-id="${h.id}" ${doneToday ? 'checked' : ''} style="width:18px;height:18px;accent-color:var(--purple);" />
+                <span style="flex:1; font-size:0.85rem;">${escapeHtml(h.name)}</span>
+                <span style="font-size:0.6rem; color:var(--gold); background:var(--surface); padding:0.05rem 0.4rem; border-radius:999px; border:1px solid var(--border);">🔥 ${streak}d</span>
+                <button class="delete-btn" data-id="${h.id}">✕</button>
+            </div>
+        `;
+    }).join('');
+    list.querySelectorAll('.habit-check').forEach(cb => cb.addEventListener('change', function() {
+        const id = parseInt(this.dataset.id);
+        const habit = state.habits.find(h => h.id === id);
+        if (habit) { if (!habit.history) habit.history = {}; habit.history[TODAY] = this.checked; saveStateLocal(); renderAll(); }
+    }));
+    list.querySelectorAll('.delete-btn').forEach(b => b.addEventListener('click', function() {
+        const id = parseInt(this.dataset.id);
+        state.habits = state.habits.filter(h => h.id !== id);
+        saveStateLocal(); renderAll();
+    }));
+}
+$('addHabit').addEventListener('click', () => {
+    const name = $('habitInput').value.trim();
+    if (!name) return;
+    state.habits.push({ id: Date.now() + Math.random() * 1000, name, history: {} });
+    saveStateLocal();
+    renderAll();
+    $('habitInput').value = '';
+});
+$('habitInput').addEventListener('keydown', e => { if (e.key === 'Enter') $('addHabit').click(); });
+
+function renderNotes() {
+    $('notesInput').value = state.notes || '';
+}
+$('saveNotes').addEventListener('click', () => {
+    state.notes = $('notesInput').value.trim();
+    saveStateLocal();
+    renderAll();
+    showToast('✅ Notes saved');
+});
+
+function renderStats() {
+    const todayMissions = (state.missions || []).filter(m => m.date === TODAY);
+    const done = todayMissions.filter(m => m.done).length;
+    let streak = 0; let d = new Date();
+    while (true) {
+        const key = d.toISOString().split('T')[0];
+        const dayMissions = (state.missions || []).filter(m => m.date === key);
+        if (dayMissions.length === 0) break;
+        if (!dayMissions.every(m => m.done)) break;
+        streak++; d.setDate(d.getDate() - 1);
+    }
+    $('statStreak').textContent = streak;
+}
+
+function checkReminders() {
+    const y = new Date(); y.setDate(y.getDate() - 1);
+    const yKey = y.toISOString().split('T')[0];
+    const left = (state.missions || []).filter(m => m.date === yKey && !m.done).length;
+    const banner = $('reminderBanner');
+    if (left > 0) {
+        banner.textContent = `⚠️ ${left} incomplete task${left > 1 ? 's' : ''} from yesterday!`;
+        banner.style.display = 'block';
+    } else {
+        banner.style.display = 'none';
+    }
+}
+
+// AI Coach
+function generateCoachAdvice() {
+    const todayMissions = (state.missions || []).filter(m => m.date === TODAY);
+    const done = todayMissions.filter(m => m.done).length;
+    const total = todayMissions.length;
+    const streak = parseInt($('statStreak').textContent) || 0;
+    let advice = '';
+    if (total === 0) advice = 'Start by adding your top 3 priorities for today. What matters most?';
+    else if (done === total && total > 0) advice = `🔥 Perfect! All ${total} tasks done. Now tackle a habit or plan tomorrow.`;
+    else if (done === 0 && total > 0) advice = `You have ${total} tasks waiting. Start with the hardest one first.`;
+    else if (done < total) advice = `You've done ${done}/${total}. Keep going!`;
+    else if (streak > 5) advice = `🏆 ${streak}-day streak! You're unstoppable.`;
+    else advice = 'Consistency beats intensity. Show up every day.';
+    $('coachMsg').innerHTML = `💡 ${advice}`;
+}
+$('refreshCoach').addEventListener('click', generateCoachAdvice);
+
+// ================================================================
+//  GROCERY TAB
+// ================================================================
+function renderGroceries() {
+    const list = $('groceryList');
+    const items = state.groceries || [];
+    if (items.length === 0) {
+        list.innerHTML = '<li class="empty-msg">No grocery items yet.</li>';
+        return;
+    }
+    list.innerHTML = items.map((item, idx) => `
+        <li>
+            <button class="check-btn ${item.done ? 'done' : ''}" data-idx="${idx}">${item.done ? '✓' : '○'}</button>
+            <span class="text ${item.done ? 'done' : ''}">${escapeHtml(item.name)}</span>
+            <span class="badge">${escapeHtml(item.category)}</span>
+            <button class="delete-btn" data-idx="${idx}">✕</button>
+        </li>
+    `).join('');
+    list.querySelectorAll('.check-btn').forEach(b => b.addEventListener('click', function() {
+        const idx = parseInt(this.dataset.idx);
+        state.groceries[idx].done = !state.groceries[idx].done;
+        saveStateLocal();
+        renderGroceries();
+    }));
+    list.querySelectorAll('.delete-btn').forEach(b => b.addEventListener('click', function() {
+        const idx = parseInt(this.dataset.idx);
+        state.groceries.splice(idx, 1);
+        saveStateLocal();
+        renderGroceries();
+    }));
+}
+$('addGrocery').addEventListener('click', () => {
+    const name = $('groceryInput').value.trim();
+    const category = $('groceryCategory').value;
+    if (!name) { showToast('⚠️ Enter an item name'); return; }
+    state.groceries.push({ name, category, done: false });
+    saveStateLocal();
+    renderGroceries();
+    $('groceryInput').value = '';
+    showToast('✅ Added to grocery list');
+});
+$('groceryInput').addEventListener('keydown', e => { if (e.key === 'Enter') $('addGrocery').click(); });
+$('clearGrocery').addEventListener('click', () => {
+    state.groceries = state.groceries.filter(item => !item.done);
+    saveStateLocal();
+    renderGroceries();
+    showToast('✅ Cleared purchased items');
+});
+
+// ================================================================
+//  SPENDING TAB
+// ================================================================
+function renderSpending() {
+    const list = $('spendingList');
+    const items = state.spending || [];
+    const monthItems = items.filter(item => item.date && item.date.startsWith(CURRENT_MONTH));
+    const total = monthItems.reduce((sum, item) => sum + (item.amount || 0), 0);
+    $('totalSpending').textContent = '$' + total.toFixed(2);
+    
+    if (items.length === 0) {
+        list.innerHTML = '<li class="empty-msg">No expenses recorded.</li>';
+        return;
+    }
+    list.innerHTML = items.map((item, idx) => `
+        <li>
+            <span class="text">${escapeHtml(item.description)}</span>
+            <span class="badge">${escapeHtml(item.category)}</span>
+            <span class="amount">$${(item.amount || 0).toFixed(2)}</span>
+            <button class="delete-btn" data-idx="${idx}">✕</button>
+        </li>
+    `).join('');
+    list.querySelectorAll('.delete-btn').forEach(b => b.addEventListener('click', function() {
+        const idx = parseInt(this.dataset.idx);
+        state.spending.splice(idx, 1);
+        saveStateLocal();
+        renderSpending();
+    }));
+}
+$('addSpending').addEventListener('click', () => {
+    const description = $('spendingDesc').value.trim();
+    const amount = parseFloat($('spendingAmount').value);
+    const category = $('spendingCategory').value;
+    if (!description) { showToast('⚠️ Enter a description'); return; }
+    if (!amount || amount <= 0) { showToast('⚠️ Enter a valid amount'); return; }
+    state.spending.push({ description, amount, category, date: TODAY });
+    saveStateLocal();
+    renderSpending();
+    $('spendingDesc').value = '';
+    $('spendingAmount').value = '';
+    showToast('✅ Expense recorded');
+});
+$('clearSpending').addEventListener('click', () => {
+    if (confirm('Delete all expenses?')) {
+        state.spending = [];
+        saveStateLocal();
+        renderSpending();
+        showToast('✅ All expenses cleared');
+    }
+});
+
+// ================================================================
+//  SETTINGS TAB
+// ================================================================
+function loadTheme() {
+    const primary = localStorage.getItem('userPrimary');
+    const bg = localStorage.getItem('userBg');
+    if (primary) {
+        document.documentElement.style.setProperty('--user-primary', primary);
+        document.documentElement.setAttribute('data-primary-color', 'true');
+    }
+    if (bg) {
+        document.documentElement.style.setProperty('--user-bg', bg);
+        document.documentElement.setAttribute('data-bg-color', 'true');
+    }
+}
+function setPrimaryColor(color) {
+    localStorage.setItem('userPrimary', color);
+    document.documentElement.style.setProperty('--user-primary', color);
+    document.documentElement.setAttribute('data-primary-color', 'true');
+    showToast('🎨 Primary color updated!');
+}
+function setBgColor(color) {
+    localStorage.setItem('userBg', color);
+    document.documentElement.style.setProperty('--user-bg', color);
+    document.documentElement.setAttribute('data-bg-color', 'true');
+    showToast('🎨 Background updated!');
+}
+function resetTheme() {
+    localStorage.removeItem('userPrimary');
+    localStorage.removeItem('userBg');
+    document.documentElement.style.removeProperty('--user-primary');
+    document.documentElement.style.removeProperty('--user-bg');
+    document.documentElement.removeAttribute('data-primary-color');
+    document.documentElement.removeAttribute('data-bg-color');
+    showToast('✅ Theme reset!');
+}
+document.querySelectorAll('.color-opt').forEach(btn => {
+    btn.addEventListener('click', function() { setPrimaryColor(this.dataset.color); });
+});
+document.querySelectorAll('.bg-opt').forEach(btn => {
+    btn.addEventListener('click', function() { setBgColor(this.dataset.bg); });
+});
+$('resetThemeBtn').addEventListener('click', resetTheme);
+
+// Export
+$('exportBtn').addEventListener('click', () => {
+    const data = JSON.stringify({ ...state, exportedAt: new Date().toISOString() }, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'nohourwasted-backup.json';
+    a.click();
+    showToast('✅ JSON exported');
+});
+$('exportCSVBtn').addEventListener('click', () => {
+    let csv = 'Date,Task,Done\n';
+    (state.missions || []).forEach(m => csv += `${m.date},${m.text},${m.done ? 'Yes' : 'No'}\n`);
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'missions.csv';
+    a.click();
+    showToast('✅ CSV exported');
+});
+
+// Weekly Review
+$('weeklyBtn').addEventListener('click', function() {
+    let html = '<table style="width:100%;border-collapse:collapse;font-size:0.75rem;"><tr><th style="text-align:left;padding:0.15rem 0.3rem;border-bottom:1px solid var(--border);">Date</th><th style="text-align:left;padding:0.15rem 0.3rem;border-bottom:1px solid var(--border);">Done/Total</th><th style="text-align:left;padding:0.15rem 0.3rem;border-bottom:1px solid var(--border);">Status</th></tr>';
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date(); d.setDate(d.getDate() - i);
+        const key = d.toISOString().split('T')[0];
+        const dayMissions = (state.missions || []).filter(m => m.date === key);
+        const done = dayMissions.filter(m => m.done).length;
+        const total = dayMissions.length;
+        const icon = total === 0 ? '⚪' : (done === total ? '✅' : '❌');
+        html += `<tr><td style="padding:0.15rem 0.3rem;border-bottom:1px solid var(--border);">${key}</td><td style="padding:0.15rem 0.3rem;border-bottom:1px solid var(--border);">${done}/${total}</td><td style="padding:0.15rem 0.3rem;border-bottom:1px solid var(--border);">${icon}</td></tr>`;
+    }
+    html += '</table>';
+    $('weeklyContent').innerHTML = html;
+    showToast('📊 Weekly review loaded');
+});
+
+// Clear all data
+$('clearAllDataBtn').addEventListener('click', () => {
+    if (confirm('⚠️ Delete ALL data? This cannot be undone!')) {
+        state = { prepare: '', missions: [], habits: [], notes: '', lastDate: '', groceries: [], spending: [] };
+        saveStateLocal();
+        renderAll();
+        showToast('🗑️ All data cleared');
+    }
+});
+
+// ================================================================
+//  SYNC & NOTIFICATIONS
+// ================================================================
 let firebaseInitialized = false;
 let db = null;
+
 async function initFirebase() {
     if (firebaseInitialized) return true;
     if (!FIREBASE_CONFIG.apiKey || FIREBASE_CONFIG.apiKey === 'YOUR_API_KEY') {
-        syncStatus.textContent = '☁️ No cloud';
+        $('syncStatus').textContent = '☁️ No cloud';
         return false;
     }
     try {
@@ -429,307 +814,106 @@ async function initFirebase() {
         db = firebase.firestore();
         await db.enablePersistence({ synchronizeTabs: true });
         firebaseInitialized = true;
-        syncStatus.textContent = '☁️ Online';
-        syncStatus.className = 'sync-status synced';
+        $('syncStatus').textContent = '☁️ Online';
+        $('syncStatus').className = 'sync-status synced';
         return true;
     } catch (e) {
-        syncStatus.textContent = '☁️ Offline';
-        syncStatus.className = 'sync-status';
+        $('syncStatus').textContent = '☁️ Offline';
+        $('syncStatus').className = 'sync-status';
         return false;
     }
 }
-function loadScript(src) { return new Promise((r,rej)=>{ const s=document.createElement('script'); s.src=src; s.onload=r; s.onerror=rej; document.head.appendChild(s); }); }
+function loadScript(src) {
+    return new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = src;
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+    });
+}
+
 async function syncToCloud() {
     if (!await initFirebase()) { showToast('⚠️ Firebase not configured'); return; }
     try {
-        syncStatus.textContent = '☁️ Syncing...';
-        await db.collection('tasks').doc('user_data').set({ uid:'default', data:state, updatedAt:firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
-        syncStatus.textContent = '☁️ Synced ✓';
-        syncStatus.className = 'sync-status synced';
+        $('syncStatus').textContent = '☁️ Syncing...';
+        await db.collection('tasks').doc('user_data').set({ uid: 'default', data: state, updatedAt: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+        $('syncStatus').textContent = '☁️ Synced ✓';
+        $('syncStatus').className = 'sync-status synced';
         showToast('✅ Synced!');
-    } catch (e) { syncStatus.textContent = '☁️ Failed'; showToast('⚠️ Sync failed'); }
-}
-async function syncFromCloud() {
-    if (!await initFirebase()) { showToast('⚠️ No cloud'); return; }
-    try {
-        const doc = await db.collection('tasks').doc('user_data').get();
-        if (doc.exists) {
-            const remote = doc.data().data;
-            if (remote) { state = { ...state, ...remote }; state.habits = state.habits.map(h=>({...h, history:h.history||{}})); saveStateLocal(); renderAll(); showToast('✅ Downloaded!'); }
-        }
-        syncStatus.textContent = '☁️ Synced ✓';
-        syncStatus.className = 'sync-status synced';
-    } catch (e) { showToast('⚠️ Download failed'); }
+    } catch (e) {
+        $('syncStatus').textContent = '☁️ Failed';
+        $('syncStatus').className = 'sync-status';
+        showToast('⚠️ Sync failed');
+    }
 }
 
-// ----- NOTIFICATIONS -----
+$('syncBtn').addEventListener('click', syncToCloud);
+$('syncBtnSettings').addEventListener('click', syncToCloud);
+
+// Notifications
 async function requestNotification() {
     if (!('Notification' in window)) { showToast('⚠️ Not supported'); return; }
-    if (Notification.permission === 'granted') { sendNotif(); return; }
-    if (Notification.permission === 'denied') { showToast('⚠️ Blocked'); return; }
-    const perm = await Notification.requestPermission();
-    if (perm === 'granted') { sendNotif(); showToast('🔔 Enabled!'); scheduleReminders(); }
-}
-function sendNotif() {
     if (Notification.permission === 'granted') {
-        const left = state.missions.filter(m=>m.date===TODAY&&!m.done).length;
-        new Notification('⏳ No Hour Wasted', { body: `${left} tasks left today. Stay focused!`, icon: 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23f59e0b\' width=\'100\' height=\'100\' rx=\'20\'/%3E%3Ctext x=\'50\' y=\'68\' text-anchor=\'middle\' font-size=\'54\' fill=\'white\' font-family=\'sans-serif\' font-weight=\'bold\'%3E⏳%3C/text%3E%3C/svg%3E' });
-    }
-}
-function scheduleReminders() {
-    setInterval(() => {
-        const h = new Date().getHours();
-        if ([9,13,18,21].includes(h) && Notification.permission==='granted') {
-            const left = state.missions.filter(m=>m.date===TODAY&&!m.done).length;
-            if (left>0) new Notification('⏳ Reminder', { body: `${left} tasks left!`, icon: 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23f59e0b\' width=\'100\' height=\'100\' rx=\'20\'/%3E%3Ctext x=\'50\' y=\'68\' text-anchor=\'middle\' font-size=\'54\' fill=\'white\' font-family=\'sans-serif\' font-weight=\'bold\'%3E⏳%3C/text%3E%3C/svg%3E' });
-        }
-    }, 3600000);
-}
-
-// ----- VOICE INPUT -----
-function setupVoice(button, targetInput) {
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-        button.style.display = 'none';
+        new Notification('⏳ No Hour Wasted', { body: 'Stay focused today!' });
         return;
     }
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'en-US';
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    button.addEventListener('click', () => {
-        button.classList.toggle('listening');
-        if (button.classList.contains('listening')) {
-            recognition.start();
-        } else {
-            recognition.stop();
-        }
-    });
-    recognition.onresult = (e) => {
-        const text = e.results[0][0].transcript;
-        targetInput.value = text;
-        targetInput.focus();
-        button.classList.remove('listening');
-        showToast('🎤 "' + text + '"');
-    };
-    recognition.onerror = () => { button.classList.remove('listening'); };
-}
-setupVoice(voiceMission, missionInput);
-setupVoice(voiceHabit, habitInput);
-
-// ----- EXPORT -----
-function exportData() {
-    const json = JSON.stringify({ exportedAt: new Date().toISOString(), ...state }, null, 2);
-    const blob = new Blob([json], { type:'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'no-hour-wasted-backup.json';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    // CSV
-    const rows = [['Date','Task','Done']];
-    state.missions.forEach(m=>rows.push([m.date,m.text,m.done?'Yes':'No']));
-    const csv = rows.map(r=>r.join(',')).join('\n');
-    const blob2 = new Blob([csv], { type:'text/csv' });
-    const a2 = document.createElement('a');
-    a2.href = URL.createObjectURL(blob2);
-    a2.download = 'missions.csv';
-    document.body.appendChild(a2);
-    a2.click();
-    document.body.removeChild(a2);
-    showToast('✅ Exported JSON + CSV');
-}
-
-// ----- WEEKLY REVIEW -----
-function showWeeklyReview() {
-    let html = `<table><tr><th>Date</th><th>Done/Total</th><th>Status</th></tr>`;
-    for (let i=6; i>=0; i--) {
-        const d = new Date(); d.setDate(d.getDate() - i);
-        const key = d.toISOString().split('T')[0];
-        const dayMissions = state.missions.filter(m=>m.date===key);
-        const done = dayMissions.filter(m=>m.done).length;
-        const total = dayMissions.length;
-        const icon = total===0 ? '⚪' : (done===total ? '✅' : '❌');
-        html += `<tr><td>${key}</td><td>${done}/${total}</td><td>${icon}</td></tr>`;
-    }
-    html += `</table><div style="margin-top:0.4rem;font-size:0.75rem;color:var(--text-muted);">Habit streaks:</div>`;
-    state.habits.forEach(h => {
-        let s=0; let d=new Date();
-        while(true){ const key=d.toISOString().split('T')[0]; if(h.history&&h.history[key]){s++; d.setDate(d.getDate()-1);} else break; }
-        html += `<div style="font-size:0.75rem;">${h.name}: 🔥 ${s}d</div>`;
-    });
-    weeklyContent.innerHTML = html;
-    weeklyCard.style.display = 'block';
-    weeklyCard.scrollIntoView({ behavior:'smooth' });
-}
-
-// ----- HEATMAP (last 30 days) -----
-function renderHeatmap() {
-    let html = '';
-    for (let i=29; i>=0; i--) {
-        const d = new Date(); d.setDate(d.getDate() - i);
-        const key = d.toISOString().split('T')[0];
-        const dayMissions = state.missions.filter(m=>m.date===key);
-        const total = dayMissions.length;
-        const done = dayMissions.filter(m=>m.done).length;
-        let cls = 'day empty';
-        if (total>0 && done===total) cls = 'day complete';
-        else if (total>0 && done<total) cls = 'day partial';
-        html += `<div class="${cls}" title="${key}: ${done}/${total}">${d.getDate()}</div>`;
-    }
-    heatmap.innerHTML = html;
-}
-
-// ----- AI COACH -----
-function generateCoachAdvice() {
-    const todayMissions = state.missions.filter(m=>m.date===TODAY);
-    const done = todayMissions.filter(m=>m.done).length;
-    const total = todayMissions.length;
-    const streak = parseInt(statStreak.textContent) || 0;
-    const habitsDone = state.habits.filter(h=>h.history && h.history[TODAY]).length;
-    const totalHabits = state.habits.length;
-
-    let advice = '';
-    if (total === 0) advice = 'Start by adding your top 3 priorities for today. What matters most?';
-    else if (done === total && total > 0) advice = `🔥 Perfect! All ${total} tasks done. Now tackle a habit or plan tomorrow.`;
-    else if (done === 0 && total > 0) advice = `You have ${total} tasks waiting. Start with the hardest one first – the "eat the frog" method.`;
-    else if (done < total) advice = `You've done ${done}/${total}. Keep going! You're ${Math.round((done/total)*100)}% there.`;
-    else if (streak > 5) advice = `🏆 ${streak}-day streak! You're unstoppable. Add one extra challenge today.`;
-    else if (totalHabits > 0 && habitsDone < totalHabits) advice = `Don't forget your habits! You've done ${habitsDone}/${totalHabits} today.`;
-    else advice = 'Consistency beats intensity. Show up every day.';
-    coachMsg.innerHTML = `<span class="label">💡 Insight:</span> ${advice}`;
-}
-refreshCoach.addEventListener('click', generateCoachAdvice);
-
-// ----- SHARE -----
-async function shareProgress() {
-    const streak = statStreak.textContent;
-    const done = statDone.textContent;
-    const total = statMissions.textContent;
-    const msg = `⏳ No Hour Wasted\nStreak: ${streak} days\nToday: ${done}/${total} tasks done\nHabits: ${statHabits.textContent} tracked\n#NoHourWasted`;
-    if (navigator.share) {
-        try { await navigator.share({ title:'My Progress', text:msg }); } catch(e) {}
-    } else {
-        navigator.clipboard.writeText(msg).then(() => showToast('📋 Copied to clipboard!'));
+    if (Notification.permission === 'denied') { showToast('⚠️ Blocked'); return; }
+    const perm = await Notification.requestPermission();
+    if (perm === 'granted') {
+        new Notification('⏳ No Hour Wasted', { body: 'Notifications enabled!' });
+        showToast('🔔 Enabled!');
     }
 }
-shareBtn.addEventListener('click', shareProgress);
+$('notifyBtn').addEventListener('click', requestNotification);
 
-// ----- RENDER -----
-function renderPrepare() { prepareInput.value = state.prepare||''; prepareStatus.textContent = state.prepare ? '✅ Set' : ''; }
-function renderMissions() {
-    const todayMissions = state.missions.filter(m=>m.date===TODAY);
-    if (todayMissions.length===0) { missionList.innerHTML='<li class="empty-msg">No missions today.</li>'; statMissions.textContent='0'; statDone.textContent='0'; return; }
-    const done = todayMissions.filter(m=>m.done).length;
-    statMissions.textContent = todayMissions.length;
-    statDone.textContent = done;
-    missionList.innerHTML = todayMissions.map(m => `
-        <li class="mission-item ${m.done?'done':''}">
-            <button class="status-btn ${m.done?'done':''}" data-id="${m.id}">${m.done?'✓':'○'}</button>
-            <span class="text ${m.done?'done':''}">${escapeHtml(m.text)}</span>
-            <button class="delete-btn" data-id="${m.id}">✕</button>
-        </li>
-    `).join('');
-    missionList.querySelectorAll('.status-btn').forEach(b=>b.addEventListener('click',()=>{
-        const id=parseInt(b.dataset.id); const task=state.missions.find(m=>m.id===id); if(task){task.done=!task.done; saveStateLocal(); renderAll();}
-    }));
-    missionList.querySelectorAll('.delete-btn').forEach(b=>b.addEventListener('click',()=>{
-        const id=parseInt(b.dataset.id); state.missions=state.missions.filter(m=>m.id!==id); saveStateLocal(); renderAll();
-    }));
-}
-function renderHabits() {
-    if (state.habits.length===0) { habitList.innerHTML='<div class="empty-msg">No habits yet.</div>'; statHabits.textContent='0'; return; }
-    statHabits.textContent = state.habits.length;
-    habitList.innerHTML = state.habits.map(h => {
-        let s=0; let d=new Date();
-        while(true){ const key=d.toISOString().split('T')[0]; if(h.history&&h.history[key]){s++; d.setDate(d.getDate()-1);} else break; }
-        const doneToday = h.history && h.history[TODAY] === true;
-        return `<div class="habit-item">
-            <input type="checkbox" class="habit-check" data-id="${h.id}" ${doneToday?'checked':''} />
-            <span style="flex:1;">${escapeHtml(h.name)}</span>
-            <span class="habit-streak">🔥 ${s}d</span>
-            <button class="delete-btn" data-id="${h.id}">✕</button>
-        </div>`;
-    }).join('');
-    habitList.querySelectorAll('.habit-check').forEach(cb=>cb.addEventListener('change',(e)=>{
-        const id=parseInt(e.target.dataset.id); const habit=state.habits.find(h=>h.id===id);
-        if(habit){ if(!habit.history) habit.history={}; habit.history[TODAY]=e.target.checked; saveStateLocal(); renderAll(); }
-    }));
-    habitList.querySelectorAll('.delete-btn').forEach(b=>b.addEventListener('click',()=>{
-        const id=parseInt(b.dataset.id); state.habits=state.habits.filter(h=>h.id!==id); saveStateLocal(); renderAll();
-    }));
-}
-function renderNotes() { notesInput.value = state.notes||''; }
-function renderStats() {
-    const todayMissions = state.missions.filter(m=>m.date===TODAY);
-    const done = todayMissions.filter(m=>m.done).length;
-    statMissions.textContent = todayMissions.length;
-    statDone.textContent = done;
-    let streak=0; let d=new Date();
-    while(true){ const key=d.toISOString().split('T')[0]; const dayMissions=state.missions.filter(m=>m.date===key); if(dayMissions.length===0)break; if(!dayMissions.every(m=>m.done))break; streak++; d.setDate(d.getDate()-1); }
-    statStreak.textContent = streak;
-    statHabits.textContent = state.habits.length;
-}
-function checkReminders() {
-    const y = new Date(); y.setDate(y.getDate()-1); const yKey=y.toISOString().split('T')[0];
-    const left = state.missions.filter(m=>m.date===yKey&&!m.done).length;
-    if(left>0){ reminderBanner.textContent=`⚠️ ${left} incomplete task${left>1?'s':''} from yesterday!`; reminderBanner.classList.add('show'); }
-    else reminderBanner.classList.remove('show');
-}
-function renderAll() { renderPrepare(); renderMissions(); renderHabits(); renderNotes(); renderStats(); checkReminders(); renderHeatmap(); generateCoachAdvice(); dateBadge.textContent=TODAY; }
-
-// ----- HELPERS -----
-function escapeHtml(t){ const d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
-
-// ----- EVENTS -----
-savePrepare.addEventListener('click', ()=>{ state.prepare=prepareInput.value.trim(); saveStateLocal(); renderAll(); showToast('✅ Intent saved'); });
-addMission.addEventListener('click', ()=>{
-    const text=missionInput.value.trim(); if(!text)return;
-    const todayMissions=state.missions.filter(m=>m.date===TODAY);
-    if(todayMissions.length>=3){ showToast('⚠️ Max 3 missions!'); return; }
-    state.missions.push({ id:Date.now()+Math.random()*1000, text, done:false, date:TODAY });
-    saveStateLocal(); renderAll(); missionInput.value=''; missionInput.focus();
+// Theme toggle
+$('themeToggle').addEventListener('click', function() {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
 });
-missionInput.addEventListener('keydown', e=>{ if(e.key==='Enter') addMission.click(); });
-addHabit.addEventListener('click', ()=>{
-    const name=habitInput.value.trim(); if(!name)return;
-    state.habits.push({ id:Date.now()+Math.random()*1000, name, history:{} });
-    saveStateLocal(); renderAll(); habitInput.value='';
-});
-habitInput.addEventListener('keydown', e=>{ if(e.key==='Enter') addHabit.click(); });
-saveNotes.addEventListener('click', ()=>{ state.notes=notesInput.value.trim(); saveStateLocal(); renderAll(); showToast('✅ Notes saved'); });
-notesInput.addEventListener('blur', ()=>{ state.notes=notesInput.value.trim(); saveStateLocal(); });
-prepareInput.addEventListener('blur', ()=>{ state.prepare=prepareInput.value.trim(); saveStateLocal(); });
 
-notifyBtn.addEventListener('click', requestNotification);
-exportBtn.addEventListener('click', exportData);
-weeklyBtn.addEventListener('click', showWeeklyReview);
-closeWeekly.addEventListener('click', ()=>{ weeklyCard.style.display='none'; });
-syncBtn.addEventListener('click', syncToCloud);
+// ================================================================
+//  RENDER ALL
+// ================================================================
+function renderAll() {
+    renderPrepare();
+    renderMissions();
+    renderHabits();
+    renderNotes();
+    renderStats();
+    checkReminders();
+    renderGroceries();
+    renderSpending();
+    generateCoachAdvice();
+    $('dateBadge').textContent = TODAY;
+}
 
-// ----- DAILY RESET -----
-function dailyReset(){ if(state.lastDate && state.lastDate!==TODAY){} state.lastDate=TODAY; saveStateLocal(); }
+// ================================================================
+//  HELPERS
+// ================================================================
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
 
-// ----- INIT -----
-loadTheme();
+// ================================================================
+//  INIT
+// ================================================================
 loadState();
+loadTheme();
 renderAll();
-dailyReset();
 
-// Auto-sync every 5 min
-setInterval(async ()=>{ if(firebaseInitialized) await syncToCloud(); }, 300000);
+if (state.lastDate && state.lastDate !== TODAY) { }
+state.lastDate = TODAY;
+saveStateLocal();
 
-// Notification permission check
-if(Notification.permission==='granted') scheduleReminders();
+setInterval(async () => { if (firebaseInitialized) await syncToCloud(); }, 300000);
 
-// PWA Service Worker
-if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('data:application/javascript,'+encodeURIComponent(`self.addEventListener('install',e=>e.waitUntil(skipWaiting())); self.addEventListener('activate',e=>e.waitUntil(clients.claim())); self.addEventListener('fetch',e=>e.respondWith(fetch(e.request)));`)).catch(()=>{});
-}
-
-console.log('⏳ No Hour Wasted – FULL Life OS');
-console.log('🔥 AI Coach, Heatmap, Voice, Share, Themes, Sync, Export, Notifications');
+console.log('⏳ No Hour Wasted – Full Life OS with Grocery & Spending!');
 </script>
 </body>
 </html>

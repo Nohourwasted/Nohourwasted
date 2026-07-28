@@ -19,6 +19,18 @@
             --red: #ef4444;
             --card-radius: 1rem;
         }
+        /* ===== USER CUSTOM COLORS ===== */
+        [data-primary-color] {
+            --gold: var(--user-primary, #f59e0b);
+            --blue: var(--user-primary, #f59e0b);
+            --purple: var(--user-primary, #f59e0b);
+        }
+        [data-bg-color] {
+            --bg: var(--user-bg, #0b1120);
+        }
+        [data-surface-color] {
+            --surface: var(--user-surface, #1e293b);
+        }
         [data-theme="light"] {
             --bg: #f1f5f9;
             --surface: #ffffff;
@@ -99,7 +111,7 @@
             padding: 1rem;
             margin-bottom: 1rem;
             border-left: 4px solid var(--gold);
-            transition: background 0.3s;
+            transition: background 0.3s, border-color 0.3s;
         }
         .card h2 { font-size: 0.9rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
         .card textarea, .card input[type="text"], .card input[type="number"] {
@@ -111,6 +123,7 @@
             padding: 0.4rem 0.6rem;
             font-size: 0.85rem;
             font-family: inherit;
+            transition: background 0.3s, color 0.3s;
         }
         .card textarea:focus, .card input:focus { outline: none; border-color: var(--gold); }
         .card textarea { min-height: 50px; resize: vertical; }
@@ -143,6 +156,7 @@
             background: var(--bg);
             border-radius: 0.5rem;
             margin-bottom: 0.2rem;
+            transition: background 0.3s;
         }
         .item-list li .text { flex: 1; font-size: 0.85rem; }
         .item-list li .text.done { text-decoration: line-through; color: var(--text-muted); }
@@ -165,6 +179,7 @@
             border-radius: 50%;
             cursor: pointer;
             font-size: 0.7rem;
+            transition: 0.2s;
         }
         .check-btn.done { background: var(--green); border-color: var(--green); color: white; }
         .empty-msg { color: var(--text-muted); text-align: center; padding: 0.5rem 0; font-size: 0.8rem; }
@@ -180,6 +195,7 @@
             border-radius: 0.5rem;
             text-align: center;
             border: 1px solid var(--border);
+            transition: background 0.3s;
         }
         .stat-card .num { font-size: 1.1rem; font-weight: 700; color: var(--gold); }
         .stat-card .lbl { font-size: 0.5rem; color: var(--text-muted); text-transform: uppercase; }
@@ -709,6 +725,7 @@ $('clearSpending').addEventListener('click', () => {
 function loadTheme() {
     const primary = localStorage.getItem('userPrimary');
     const bg = localStorage.getItem('userBg');
+    
     if (primary) {
         document.documentElement.style.setProperty('--user-primary', primary);
         document.documentElement.setAttribute('data-primary-color', 'true');

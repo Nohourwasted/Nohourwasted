@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>No Hour Wasted – Life OS</title>
+    <link rel="manifest" href="data:application/json,{&quot;name&quot;:&quot;No Hour Wasted&quot;,&quot;short_name&quot;:&quot;HourWasted&quot;,&quot;start_url&quot;:&quot;.&quot;,&quot;display&quot;:&quot;standalone&quot;,&quot;background_color&quot;:&quot;#0b1120&quot;,&quot;theme_color&quot;:&quot;#f59e0b&quot;,&quot;icons&quot;:[{&quot;src&quot;:&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23f59e0b' width='100' height='100' rx='20'/%3E%3Ctext x='50' y='68' text-anchor='middle' font-size='54' fill='white' font-family='sans-serif' font-weight='bold'%3E⏳%3C/text%3E%3C/svg%3E&quot;,&quot;sizes&quot;:&quot;512x512&quot;,&quot;type&quot;:&quot;image/svg+xml&quot;}]}" />
+    <style>
+        :root {
+            --bg: #0b1120;
+            --surface: #1e293b;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --gold: #f59e0b;
+            --blue: #3b82f6;
+            --purple: #8b5cf6;
+            --green: #22c55e;
+            --red: #ef4444;
+        }
+        [data-theme="light"] {
+            --bg: #f1f5f9;
+            --surface: #ffffff;
+            --text: #0b1120;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 1rem;
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+        .app { max-width: 860px; margin: 0 auto; }
+        header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0 1.2rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1.2rem;
+            gap: 0.5rem;
+        }
+        h1 { font-size: 1.5rem; background: linear-gradient(135deg,var(--gold),var(--red)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+        .header-actions button, .theme-toggle {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 0.25rem 0.7rem;
+            border-radius: 0.5rem;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .header-actions button:hover, .theme-toggle:hover { background: var(--border); color: var(--text); }
+        .date-badge { background: var(--surface); padding: 0.2rem 0.8rem; border-radius: 999px; font-size: 0.75rem; border: 1px solid var(--border); }
+
+        /* Cards */
+        .card {
+            background: var(--surface);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-bottom: 1.2rem;
+            border-left: 4px solid var(--gold);
+            transition: background 0.3s;
+        }
+        .card h2 { font-size: 0.95rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .card textarea, .card input[type="text"] {
+            width: 100%;
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 0.5rem 0.7rem;
+            font-size: 0.9rem;
+            font-family: inherit;
+        }
+        .card textarea:focus, .card input:focus { outline: none; border-color: var(--gold); }
+        .card textarea { min-height: 60px; resize: vertical; }
+
+        .btn {
+            padding: 0.35rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: 0.2s;
+        }
+        .btn-primary { background: var(--blue); color: white; }
+        .btn-primary:hover { filter: brightness(0.85); }
+        .btn-gold { background: var(--gold); color: #0b1120; }
+        .btn-gold:hover { filter: brightness(0.85); }
+        .btn-green { background: var(--green); color: #0b1120; }
+        .btn-green:hover { filter: brightness(0.85); }
+        .btn-purple { background: var(--purple); color: white; }
+        .btn-purple:hover { filter: brightness(0.85); }
+        .btn-red { background: var(--red); color: white; }
+        .btn-red:hover { filter: brightness(0.85); }
+        .btn-sm { padding: 0.15rem 0.6rem; font-size: 0.7rem; }
+
+        .flex-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .flex-row input { flex: 1; min-width: 100px; }
+
+        /* Mission & Habit items */
+        .mission-item, .habit-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0.6rem;
+            background: var(--bg);
+            border-radius: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+        .mission-item.done { border-left: 3px solid var(--green); opacity: 0.7; }
+        .mission-item .text { flex: 1; word-break: break-word; }
+        .mission-item .text.done { text-decoration: line-through; color: var(--text-muted); }
+        .status-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+        .status-btn:hover { border-color: var(--green); }
+        .status-btn.done { background: var(--green); border-color: var(--green); color: white; }
+        .delete-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; }
+        .delete-btn:hover { color: var(--red); }
+        .habit-check { width: 18px; height: 18px; accent-color: var(--purple); cursor: pointer; }
+        .habit-streak { font-size: 0.65rem; color: var(--gold); background: var(--surface); padding: 0.05rem 0.5rem; border-radius: 999px; border: 1px solid var(--border); }
+        .empty-msg { color: var(--text-muted); text-align: center; padding: 0.5rem 0; font-size: 0.85rem; }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 0.4rem;
+            margin-top: 0.3rem;
+        }
+        .stat-card {
+            background: var(--bg);
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        .stat-card .num { font-size: 1.3rem; font-weight: 700; color: var(--gold); }
+        .stat-card .lbl { font-size: 0.55rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.3px; }
+
+        /* Reminder */
+        .reminder-banner {
+            background: var(--red);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: none;
+            font-weight: 600;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+        .reminder-banner.show { display: block; }
+
+        /* Weekly Review */
+        .weekly-review {
+            background: var(--bg);
+            border-radius: 0.5rem;
+            padding: 0.7rem;
+            margin-top: 0.4rem;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+        .weekly-review table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+        .weekly-review th { text-align: left; color: var(--text-muted); font-weight: 400; padding: 0.15rem 0.3rem; border-bottom: 1px solid var(--border); }
+        .weekly-review td { padding: 0.15rem 0.3rem; border-bottom: 1px solid var(--border); }
+
+        /* Heatmap */
+        .heatmap { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; margin-top: 0.5rem; }
+        .heatmap .day {
+            aspect-ratio: 1;
+            border-radius: 4px;
+            background: var(--border);
+            font-size: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+        }
+        .heatmap .day.complete { background: var(--green); color: white; }
+        .heatmap .day.partial { background: var(--gold); color: #0b1120; }
+        .heatmap .day.empty { background: var(--border); opacity: 0.3; }
+
+        /* AI Coach */
+        .coach-msg {
+            background: var(--bg);
+            padding: 0.6rem 0.8rem;
+            border-radius: 0.5rem;
+            margin-top: 0.4rem;
+            border-left: 3px solid var(--purple);
+            font-size: 0.85rem;
+            color: var(--text);
+        }
+        .coach-msg .label { color: var(--purple); font-weight: 600; font-size: 0.7rem; text-transform: uppercase; }
+
+        /* Sync status */
+        .sync-status { font-size: 0.65rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.3rem; }
+        .sync-status.synced { color: var(--green); }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--surface);
+            color: var(--text);
+            padding: 0.5rem 1.2rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 999;
+            border: 1px solid var(--border);
+        }
+        .toast.show { opacity: 1; }
+
+        /* Voice button */
+        .voice-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.2rem; padding: 0 0.3rem; }
+        .voice-btn:hover { color: var(--gold); }
+        .voice-btn.listening { color: var(--red); animation: pulse 0.8s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .card { padding: 0.9rem; }
+            h1 { font-size: 1.2rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <header>
+        <h1>⏳ No Hour Wasted</h1>
+        <div class="header-actions">
+            <button class="theme-toggle" id="themeToggle">🌓</button>
+            <button id="notifyBtn">🔔</button>
+            <button id="exportBtn">📤</button>
+            <button id="weeklyBtn">📊</button>
+            <button id="syncBtn">☁️</button>
+            <span class="date-badge" id="dateBadge"></span>
+        </div>
+    </header>
+
+    <div class="sync-status" id="syncStatus">☁️ Offline</div>
+    <div class="reminder-banner" id="reminderBanner">⚠️ Incomplete tasks from yesterday!</div>
+
+    <!-- AI Coach -->
+    <div class="card" style="border-color:var(--purple);">
+        <h2>🧠 AI Coach</h2>
+        <div class="coach-msg" id="coachMsg"><span class="label">💡 Insight:</span> Complete today's 3 missions to build your streak!</div>
+        <button class="btn btn-sm btn-purple" id="refreshCoach">Refresh Advice</button>
+    </div>
+
+    <!-- Daily Prepare -->
+    <div class="card" style="border-color:var(--gold);">
+        <h2>🧘 Daily Prepare</h2>
+        <textarea id="prepareInput" placeholder="What's your focus today?"></textarea>
+        <div class="flex-row" style="margin-top:0.3rem;">
+            <button class="btn btn-gold" id="savePrepare">Save Intent</button>
+            <span style="font-size:0.75rem;color:var(--text-muted);align-self:center;" id="prepareStatus"></span>
+        </div>
+    </div>
+
+    <!-- Daily Mission -->
+    <div class="card" style="border-color:var(--blue);">
+        <h2>🎯 Daily Mission – Max 3</h2>
+        <div class="flex-row">
+            <input type="text" id="missionInput" placeholder="What must get done?" />
+            <button class="voice-btn" id="voiceMission" title="Voice input">🎤</button>
+            <button class="btn btn-primary" id="addMission">Add</button>
+        </div>
+        <ul id="missionList" style="list-style:none;margin-top:0.4rem;">
+            <li class="empty-msg">No missions yet.</li>
+        </ul>
+    </div>
+
+    <!-- Habits -->
+    <div class="card" style="border-color:var(--purple);">
+        <h2>🔥 Habits</h2>
+        <div class="flex-row">
+            <input type="text" id="habitInput" placeholder="e.g. Meditate" />
+            <button class="voice-btn" id="voiceHabit" title="Voice input">🎤</button>
+            <button class="btn btn-purple" id="addHabit">Add</button>
+        </div>
+        <div id="habitList" style="margin-top:0.4rem;"></div>
+    </div>
+
+    <!-- Notes -->
+    <div class="card" style="border-color:var(--green);">
+        <h2>📝 Notes & Updates</h2>
+        <textarea id="notesInput" placeholder="Reflections, blockers, wins..."></textarea>
+        <div class="flex-row" style="margin-top:0.3rem;">
+            <button class="btn btn-green" id="saveNotes">Save Notes</button>
+            <span style="font-size:0.75rem;color:var(--text-muted);align-self:center;" id="notesStatus"></span>
+        </div>
+    </div>
+
+    <!-- Weekly Review (hidden) -->
+    <div class="card" style="border-color:var(--gold);display:none;" id="weeklyCard">
+        <h2>📊 Weekly Review</h2>
+        <div class="weekly-review" id="weeklyContent"></div>
+        <button class="btn btn-sm btn-primary" id="closeWeekly" style="margin-top:0.4rem;">Close</button>
+    </div>
+
+    <!-- Calendar Heatmap -->
+    <div class="card" style="border-color:var(--blue);">
+        <h2>📅 Monthly Heatmap</h2>
+        <div class="heatmap" id="heatmap"></div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-card"><div class="num" id="statMissions">0</div><div class="lbl">Today's Tasks</div></div>
+        <div class="stat-card"><div class="num" id="statDone">0</div><div class="lbl">Completed</div></div>
+        <div class="stat-card"><div class="num" id="statHabits">0</div><div class="lbl">Habits</div></div>
+        <div class="stat-card"><div class="num" id="statStreak">0</div><div class="lbl">Day Streak</div></div>
+    </div>
+
+    <!-- Share -->
+    <div style="margin-top:1rem;text-align:center;">
+        <button class="btn btn-sm btn-primary" id="shareBtn">📤 Share Progress</button>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ================================================================
+//  🔥 FIREBASE CONFIG – YOUR VALUES ARE ALREADY FILLED IN!
+// ================================================================
+const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyAnvgJsA8oyz3TnocdqBmuEb8Ym",
+    authDomain: "no-hour-wasted.firebaseapp.com",
+    projectId: "no-hour-wasted",
+    storageBucket: "no-hour-wasted.firebasestorage.app",
+    messagingSenderId: "395760426054",
+    appId: "1:395760426054:web:447658f9295b79"
+};
+// ================================================================
+
+// ----- STATE -----
+let state = { prepare: '', missions: [], habits: [], notes: '', lastDate: '' };
+const TODAY = new Date().toISOString().split('T')[0];
+
+// ----- DOM REFS -----
+const $ = id => document.getElementById(id);
+const prepareInput = $('prepareInput'), savePrepare = $('savePrepare'), prepareStatus = $('prepareStatus');
+const missionInput = $('missionInput'), addMission = $('addMission'), missionList = $('missionList'), voiceMission = $('voiceMission');
+const habitInput = $('habitInput'), addHabit = $('addHabit'), habitList = $('habitList'), voiceHabit = $('voiceHabit');
+const notesInput = $('notesInput'), saveNotes = $('saveNotes'), notesStatus = $('notesStatus');
+const statMissions = $('statMissions'), statDone = $('statDone'), statHabits = $('statHabits'), statStreak = $('statStreak');
+const reminderBanner = $('reminderBanner'), dateBadge = $('dateBadge'), syncStatus = $('syncStatus');
+const toast = $('toast'), weeklyCard = $('weeklyCard'), weeklyContent = $('weeklyContent'), heatmap = $('heatmap');
+const notifyBtn = $('notifyBtn'), exportBtn = $('exportBtn'), weeklyBtn = $('weeklyBtn'), syncBtn = $('syncBtn');
+const closeWeekly = $('closeWeekly'), themeToggle = $('themeToggle'), coachMsg = $('coachMsg'), refreshCoach = $('refreshCoach');
+const shareBtn = $('shareBtn');
+
+// ----- TOAST -----
+let toastTimer;
+function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+}
+
+// ----- THEME -----
+function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+}
+function loadTheme() {
+    const saved = localStorage.getItem('theme');
+    if (saved) document.documentElement.setAttribute('data-theme', saved);
+}
+themeToggle.addEventListener('click', toggleTheme);
+
+// ----- LOCAL STORAGE -----
+function loadState() {
+    try {
+        const raw = localStorage.getItem('noHourWasted');
+        if (raw) {
+            const parsed = JSON.parse(raw);
+            state = { ...state, ...parsed };
+        }
+    } catch (e) {}
+    state.habits = state.habits.map(h => ({ ...h, history: h.history || {} }));
+}
+function saveStateLocal() {
+    localStorage.setItem('noHourWasted', JSON.stringify(state));
+}
+
+// ----- FIREBASE (CDN) -----
+let firebaseInitialized = false;
+let db = null;
+async function initFirebase() {
+    if (firebaseInitialized) return true;
+    if (!FIREBASE_CONFIG.apiKey || FIREBASE_CONFIG.apiKey === 'YOUR_API_KEY') {
+        syncStatus.textContent = '☁️ No cloud';
+        return false;
+    }
+    try {
+        await loadScript('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js');
+        await loadScript('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js');
+        firebase.initializeApp(FIREBASE_CONFIG);
+        db = firebase.firestore();
+        await db.enablePersistence({ synchronizeTabs: true });
+        firebaseInitialized = true;
+        syncStatus.textContent = '☁️ Online';
+        syncStatus.className = 'sync-status synced';
+        return true;
+    } catch (e) {
+        syncStatus.textContent = '☁️ Offline';
+        syncStatus.className = 'sync-status';
+        return false;
+    }
+}
+function loadScript(src) { return new Promise((r,rej)=>{ const s=document.createElement('script'); s.src=src; s.onload=r; s.onerror=rej; document.head.appendChild(s); }); }
+async function syncToCloud() {
+    if (!await initFirebase()) { showToast('⚠️ Firebase not configured'); return; }
+    try {
+        syncStatus.textContent = '☁️ Syncing...';
+        await db.collection('tasks').doc('user_data').set({ uid:'default', data:state, updatedAt:firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+        syncStatus.textContent = '☁️ Synced ✓';
+        syncStatus.className = 'sync-status synced';
+        showToast('✅ Synced!');
+    } catch (e) { syncStatus.textContent = '☁️ Failed'; showToast('⚠️ Sync failed'); }
+}
+async function syncFromCloud() {
+    if (!await initFirebase()) { showToast('⚠️ No cloud'); return; }
+    try {
+        const doc = await db.collection('tasks').doc('user_data').get();
+        if (doc.exists) {
+            const remote = doc.data().data;
+            if (remote) { state = { ...state, ...remote }; state.habits = state.habits.map(h=>({...h, history:h.history||{}})); saveStateLocal(); renderAll(); showToast('✅ Downloaded!'); }
+        }
+        syncStatus.textContent = '☁️ Synced ✓';
+        syncStatus.className = 'sync-status synced';
+    } catch (e) { showToast('⚠️ Download failed'); }
+}
+
+// ----- NOTIFICATIONS -----
+async function requestNotification() {
+    if (!('Notification' in window)) { showToast('⚠️ Not supported'); return; }
+    if (Notification.permission === 'granted') { sendNotif(); return; }
+    if (Notification.permission === 'denied') { showToast('⚠️ Blocked'); return; }
+    const perm = await Notification.requestPermission();
+    if (perm === 'granted') { sendNotif(); showToast('🔔 Enabled!'); scheduleReminders(); }
+}
+function sendNotif() {
+    if (Notification.permission === 'granted') {
+        const left = state.missions.filter(m=>m.date===TODAY&&!m.done).length;
+        new Notification('⏳ No Hour Wasted', { body: `${left} tasks left today. Stay focused!`, icon: 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23f59e0b\' width=\'100\' height=\'100\' rx=\'20\'/%3E%3Ctext x=\'50\' y=\'68\' text-anchor=\'middle\' font-size=\'54\' fill=\'white\' font-family=\'sans-serif\' font-weight=\'bold\'%3E⏳%3C/text%3E%3C/svg%3E' });
+    }
+}
+function scheduleReminders() {
+    setInterval(() => {
+        const h = new Date().getHours();
+        if ([9,13,18,21].includes(h) && Notification.permission==='granted') {
+            const left = state.missions.filter(m=>m.date===TODAY&&!m.done).length;
+            if (left>0) new Notification('⏳ Reminder', { body: `${left} tasks left!`, icon: 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect fill=\'%23f59e0b\' width=\'100\' height=\'100\' rx=\'20\'/%3E%3Ctext x=\'50\' y=\'68\' text-anchor=\'middle\' font-size=\'54\' fill=\'white\' font-family=\'sans-serif\' font-weight=\'bold\'%3E⏳%3C/text%3E%3C/svg%3E' });
+        }
+    }, 3600000);
+}
+
+// ----- VOICE INPUT -----
+function setupVoice(button, targetInput) {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        button.style.display = 'none';
+        return;
+    }
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    button.addEventListener('click', () => {
+        button.classList.toggle('listening');
+        if (button.classList.contains('listening')) {
+            recognition.start();
+        } else {
+            recognition.stop();
+        }
+    });
+    recognition.onresult = (e) => {
+        const text = e.results[0][0].transcript;
+        targetInput.value = text;
+        targetInput.focus();
+        button.classList.remove('listening');
+        showToast('🎤 "' + text + '"');
+    };
+    recognition.onerror = () => { button.classList.remove('listening'); };
+}
+setupVoice(voiceMission, missionInput);
+setupVoice(voiceHabit, habitInput);
+
+// ----- EXPORT -----
+function exportData() {
+    const json = JSON.stringify({ exportedAt: new Date().toISOString(), ...state }, null, 2);
+    const blob = new Blob([json], { type:'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'no-hour-wasted-backup.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    // CSV
+    const rows = [['Date','Task','Done']];
+    state.missions.forEach(m=>rows.push([m.date,m.text,m.done?'Yes':'No']));
+    const csv = rows.map(r=>r.join(',')).join('\n');
+    const blob2 = new Blob([csv], { type:'text/csv' });
+    const a2 = document.createElement('a');
+    a2.href = URL.createObjectURL(blob2);
+    a2.download = 'missions.csv';
+    document.body.appendChild(a2);
+    a2.click();
+    document.body.removeChild(a2);
+    showToast('✅ Exported JSON + CSV');
+}
+
+// ----- WEEKLY REVIEW -----
+function showWeeklyReview() {
+    let html = `<table><tr><th>Date</th><th>Done/Total</th><th>Status</th></tr>`;
+    for (let i=6; i>=0; i--) {
+        const d = new Date(); d.setDate(d.getDate() - i);
+        const key = d.toISOString().split('T')[0];
+        const dayMissions = state.missions.filter(m=>m.date===key);
+        const done = dayMissions.filter(m=>m.done).length;
+        const total = dayMissions.length;
+        const icon = total===0 ? '⚪' : (done===total ? '✅' : '❌');
+        html += `<tr><td>${key}</td><td>${done}/${total}</td><td>${icon}</td></tr>`;
+    }
+    html += `</table><div style="margin-top:0.4rem;font-size:0.75rem;color:var(--text-muted);">Habit streaks:</div>`;
+    state.habits.forEach(h => {
+        let s=0; let d=new Date();
+        while(true){ const key=d.toISOString().split('T')[0]; if(h.history&&h.history[key]){s++; d.setDate(d.getDate()-1);} else break; }
+        html += `<div style="font-size:0.75rem;">${h.name}: 🔥 ${s}d</div>`;
+    });
+    weeklyContent.innerHTML = html;
+    weeklyCard.style.display = 'block';
+    weeklyCard.scrollIntoView({ behavior:'smooth' });
+}
+
+// ----- HEATMAP (last 30 days) -----
+function renderHeatmap() {
+    let html = '';
+    for (let i=29; i>=0; i--) {
+        const d = new Date(); d.setDate(d.getDate() - i);
+        const key = d.toISOString().split('T')[0];
+        const dayMissions = state.missions.filter(m=>m.date===key);
+        const total = dayMissions.length;
+        const done = dayMissions.filter(m=>m.done).length;
+        let cls = 'day empty';
+        if (total>0 && done===total) cls = 'day complete';
+        else if (total>0 && done<total) cls = 'day partial';
+        html += `<div class="${cls}" title="${key}: ${done}/${total}">${d.getDate()}</div>`;
+    }
+    heatmap.innerHTML = html;
+}
+
+// ----- AI COACH -----
+function generateCoachAdvice() {
+    const todayMissions = state.missions.filter(m=>m.date===TODAY);
+    const done = todayMissions.filter(m=>m.done).length;
+    const total = todayMissions.length;
+    const streak = parseInt(statStreak.textContent) || 0;
+    const habitsDone = state.habits.filter(h=>h.history && h.history[TODAY]).length;
+    const totalHabits = state.habits.length;
+
+    let advice = '';
+    if (total === 0) advice = 'Start by adding your top 3 priorities for today. What matters most?';
+    else if (done === total && total > 0) advice = `🔥 Perfect! All ${total} tasks done. Now tackle a habit or plan tomorrow.`;
+    else if (done === 0 && total > 0) advice = `You have ${total} tasks waiting. Start with the hardest one first – the "eat the frog" method.`;
+    else if (done < total) advice = `You've done ${done}/${total}. Keep going! You're ${Math.round((done/total)*100)}% there.`;
+    else if (streak > 5) advice = `🏆 ${streak}-day streak! You're unstoppable. Add one extra challenge today.`;
+    else if (totalHabits > 0 && habitsDone < totalHabits) advice = `Don't forget your habits! You've done ${habitsDone}/${totalHabits} today.`;
+    else advice = 'Consistency beats intensity. Show up every day.';
+    coachMsg.innerHTML = `<span class="label">💡 Insight:</span> ${advice}`;
+}
+refreshCoach.addEventListener('click', generateCoachAdvice);
+
+// ----- SHARE -----
+async function shareProgress() {
+    const streak = statStreak.textContent;
+    const done = statDone.textContent;
+    const total = statMissions.textContent;
+    const msg = `⏳ No Hour Wasted\nStreak: ${streak} days\nToday: ${done}/${total} tasks done\nHabits: ${statHabits.textContent} tracked\n#NoHourWasted`;
+    if (navigator.share) {
+        try { await navigator.share({ title:'My Progress', text:msg }); } catch(e) {}
+    } else {
+        navigator.clipboard.writeText(msg).then(() => showToast('📋 Copied to clipboard!'));
+    }
+}
+shareBtn.addEventListener('click', shareProgress);
+
+// ----- RENDER -----
+function renderPrepare() { prepareInput.value = state.prepare||''; prepareStatus.textContent = state.prepare ? '✅ Set' : ''; }
+function renderMissions() {
+    const todayMissions = state.missions.filter(m=>m.date===TODAY);
+    if (todayMissions.length===0) { missionList.innerHTML='<li class="empty-msg">No missions today.</li>'; statMissions.textContent='0'; statDone.textContent='0'; return; }
+    const done = todayMissions.filter(m=>m.done).length;
+    statMissions.textContent = todayMissions.length;
+    statDone.textContent = done;
+    missionList.innerHTML = todayMissions.map(m => `
+        <li class="mission-item ${m.done?'done':''}">
+            <button class="status-btn ${m.done?'done':''}" data-id="${m.id}">${m.done?'✓':'○'}</button>
+            <span class="text ${m.done?'done':''}">${escapeHtml(m.text)}</span>
+            <button class="delete-btn" data-id="${m.id}">✕</button>
+        </li>
+    `).join('');
+    missionList.querySelectorAll('.status-btn').forEach(b=>b.addEventListener('click',()=>{
+        const id=parseInt(b.dataset.id); const task=state.missions.find(m=>m.id===id); if(task){task.done=!task.done; saveStateLocal(); renderAll();}
+    }));
+    missionList.querySelectorAll('.delete-btn').forEach(b=>b.addEventListener('click',()=>{
+        const id=parseInt(b.dataset.id); state.missions=state.missions.filter(m=>m.id!==id); saveStateLocal(); renderAll();
+    }));
+}
+function renderHabits() {
+    if (state.habits.length===0) { habitList.innerHTML='<div class="empty-msg">No habits yet.</div>'; statHabits.textContent='0'; return; }
+    statHabits.textContent = state.habits.length;
+    habitList.innerHTML = state.habits.map(h => {
+        let s=0; let d=new Date();
+        while(true){ const key=d.toISOString().split('T')[0]; if(h.history&&h.history[key]){s++; d.setDate(d.getDate()-1);} else break; }
+        const doneToday = h.history && h.history[TODAY] === true;
+        return `<div class="habit-item">
+            <input type="checkbox" class="habit-check" data-id="${h.id}" ${doneToday?'checked':''} />
+            <span style="flex:1;">${escapeHtml(h.name)}</span>
+            <span class="habit-streak">🔥 ${s}d</span>
+            <button class="delete-btn" data-id="${h.id}">✕</button>
+        </div>`;
+    }).join('');
+    habitList.querySelectorAll('.habit-check').forEach(cb=>cb.addEventListener('change',(e)=>{
+        const id=parseInt(e.target.dataset.id); const habit=state.habits.find(h=>h.id===id);
+        if(habit){ if(!habit.history) habit.history={}; habit.history[TODAY]=e.target.checked; saveStateLocal(); renderAll(); }
+    }));
+    habitList.querySelectorAll('.delete-btn').forEach(b=>b.addEventListener('click',()=>{
+        const id=parseInt(b.dataset.id); state.habits=state.habits.filter(h=>h.id!==id); saveStateLocal(); renderAll();
+    }));
+}
+function renderNotes() { notesInput.value = state.notes||''; }
+function renderStats() {
+    const todayMissions = state.missions.filter(m=>m.date===TODAY);
+    const done = todayMissions.filter(m=>m.done).length;
+    statMissions.textContent = todayMissions.length;
+    statDone.textContent = done;
+    let streak=0; let d=new Date();
+    while(true){ const key=d.toISOString().split('T')[0]; const dayMissions=state.missions.filter(m=>m.date===key); if(dayMissions.length===0)break; if(!dayMissions.every(m=>m.done))break; streak++; d.setDate(d.getDate()-1); }
+    statStreak.textContent = streak;
+    statHabits.textContent = state.habits.length;
+}
+function checkReminders() {
+    const y = new Date(); y.setDate(y.getDate()-1); const yKey=y.toISOString().split('T')[0];
+    const left = state.missions.filter(m=>m.date===yKey&&!m.done).length;
+    if(left>0){ reminderBanner.textContent=`⚠️ ${left} incomplete task${left>1?'s':''} from yesterday!`; reminderBanner.classList.add('show'); }
+    else reminderBanner.classList.remove('show');
+}
+function renderAll() { renderPrepare(); renderMissions(); renderHabits(); renderNotes(); renderStats(); checkReminders(); renderHeatmap(); generateCoachAdvice(); dateBadge.textContent=TODAY; }
+
+// ----- HELPERS -----
+function escapeHtml(t){ const d=document.createElement('div'); d.textContent=t; return d.innerHTML; }
+
+// ----- EVENTS -----
+savePrepare.addEventListener('click', ()=>{ state.prepare=prepareInput.value.trim(); saveStateLocal(); renderAll(); showToast('✅ Intent saved'); });
+addMission.addEventListener('click', ()=>{
+    const text=missionInput.value.trim(); if(!text)return;
+    const todayMissions=state.missions.filter(m=>m.date===TODAY);
+    if(todayMissions.length>=3){ showToast('⚠️ Max 3 missions!'); return; }
+    state.missions.push({ id:Date.now()+Math.random()*1000, text, done:false, date:TODAY });
+    saveStateLocal(); renderAll(); missionInput.value=''; missionInput.focus();
+});
+missionInput.addEventListener('keydown', e=>{ if(e.key==='Enter') addMission.click(); });
+addHabit.addEventListener('click', ()=>{
+    const name=habitInput.value.trim(); if(!name)return;
+    state.habits.push({ id:Date.now()+Math.random()*1000, name, history:{} });
+    saveStateLocal(); renderAll(); habitInput.value='';
+});
+habitInput.addEventListener('keydown', e=>{ if(e.key==='Enter') addHabit.click(); });
+saveNotes.addEventListener('click', ()=>{ state.notes=notesInput.value.trim(); saveStateLocal(); renderAll(); showToast('✅ Notes saved'); });
+notesInput.addEventListener('blur', ()=>{ state.notes=notesInput.value.trim(); saveStateLocal(); });
+prepareInput.addEventListener('blur', ()=>{ state.prepare=prepareInput.value.trim(); saveStateLocal(); });
+
+notifyBtn.addEventListener('click', requestNotification);
+exportBtn.addEventListener('click', exportData);
+weeklyBtn.addEventListener('click', showWeeklyReview);
+closeWeekly.addEventListener('click', ()=>{ weeklyCard.style.display='none'; });
+syncBtn.addEventListener('click', syncToCloud);
+
+// ----- DAILY RESET -----
+function dailyReset(){ if(state.lastDate && state.lastDate!==TODAY){} state.lastDate=TODAY; saveStateLocal(); }
+
+// ----- INIT -----
+loadTheme();
+loadState();
+renderAll();
+dailyReset();
+
+// Auto-sync every 5 min
+setInterval(async ()=>{ if(firebaseInitialized) await syncToCloud(); }, 300000);
+
+// Notification permission check
+if(Notification.permission==='granted') scheduleReminders();
+
+// PWA Service Worker
+if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('data:application/javascript,'+encodeURIComponent(`self.addEventListener('install',e=>e.waitUntil(skipWaiting())); self.addEventListener('activate',e=>e.waitUntil(clients.claim())); self.addEventListener('fetch',e=>e.respondWith(fetch(e.request)));`)).catch(()=>{});
+}
+
+console.log('⏳ No Hour Wasted – FULL Life OS');
+console.log('🔥 AI Coach, Heatmap, Voice, Share, Themes, Sync, Export, Notifications');
+</script>
+</body>
+</html>
